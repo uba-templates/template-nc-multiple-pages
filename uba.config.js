@@ -70,7 +70,7 @@ prodEntries["vendors"] = getVendors();
 //开发环境多入口
 glob.sync("./src/pages/*/index.js").forEach(path => {
   const chunk = path.split("./src/pages/")[1].split("/index.js")[0];
-  entries[chunk] = [path, hotMiddlewareScript];
+  entries[`${chunk}/index`] = [path, hotMiddlewareScript];
   chunks.push(chunk);
   prodEntries[`${chunk}/index`] = [path];
   prodChunks.push(chunk);

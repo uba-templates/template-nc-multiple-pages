@@ -12,7 +12,7 @@ export default class Welcome extends Component{
         <div className="panel-heading">
           <h3 className="panel-title">{this.props.title}</h3>
         </div>
-        <div className="panel-body">{this.props.content}</div>
+        <div className="panel-body logo">{this.props.content}</div>
       </div>
     </div>)
   }

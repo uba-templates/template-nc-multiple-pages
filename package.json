@@ -1,6 +1,6 @@
 {
-  "name": "webpack-react-multiple-pages",
-  "version": "1.0.2",
+  "name": "webpack-nc-multiple-pages",
+  "version": "1.0.0",
   "description": "uba boilerplate react multipage",
   "main": "index.js",
   "scripts": {

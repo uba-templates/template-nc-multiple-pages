@@ -32,6 +32,18 @@ const proxyConfig = [{
   url: "https://api.github.com"
 }];
 
+//提取package里的包
+function getVendors() {
+  let pkg = require("./package.json");
+  let _vendors = [];
+  for (const key in pkg.dependencies) {
+    _vendors.push(key);
+
+  }
+
+  return _vendors;
+}
+
 //优化配置，对于使用CDN作为包资源的引用从外到内的配置
 const externals = {
   "react": "React",
@@ -51,15 +63,19 @@ const resolve = {
     pages: path.resolve(__dirname, "src/pages/")
   }
 }
+//优化公共资源提取
+entries["vendors"] = getVendors();
+prodEntries["vendors"] = getVendors();
 
 //开发环境多入口
 glob.sync("./src/pages/*/index.js").forEach(path => {
   const chunk = path.split("./src/pages/")[1].split("/index.js")[0];
   entries[chunk] = [path, hotMiddlewareScript];
   chunks.push(chunk);
-  prodEntries[chunk] = [path];
+  prodEntries[`${chunk}/index`] = [path];
   prodChunks.push(chunk);
 });
+
 
 //Loader
 const rules = [{
@@ -138,7 +154,7 @@ var prodConfig = {
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].[hash:8].js",
-    publicPath: ""
+    publicPath: "../"
   },
   externals: externals,
   module: {
@@ -169,14 +185,15 @@ var prodConfig = {
 //页面扫描机制包含开发环境和生产环境的html
 glob.sync("./src/pages/*/index.html").forEach(path => {
   const chunk = path.split("./src/pages/")[1].split("/index.html")[0];
-  const filename = chunk + ".html";
+  const filename = `${chunk}/index.html`;
   const htmlConf = {
     filename: filename,
     template: path,
     inject: "body",
     favicon: "./src/assets/images/favicon.png",
     hash: true,
-    chunks: ["vendors", chunk]
+    chunks: ["vendors", `${chunk}/index`],
+    chunksSortMode: "manual"
   }
   devConfig.plugins.push(new HtmlWebpackPlugin(htmlConf));
   prodConfig.plugins.push(new HtmlWebpackPlugin(htmlConf));
